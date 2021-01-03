@@ -1,4 +1,3 @@
-#!/bin/bash
 docker pull ubuntu:bionic
 docker pull cassandra:2.1
 sudo sysctl net.ipv4.conf.all.forwarding=1
@@ -27,6 +26,15 @@ docker image prune --force
 docker image ls
 
 #UE and eNB
+sudo apt-get install linux-image-lowlatency linux-headers-lowlatency
+sudo apt-get install i7z
+sudo i7z
+
+sudo apt-get install cpufrequtils
+sudo vi /etc/default/cpufrequtils
+GOVERNOR="performance"
+
+
 sudo apt-get update
 sudo apt-get install subversion git
 echo -n | openssl s_client -showcerts -connect gitlab.eurecom.fr:443 2>/dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-certificates.crt
