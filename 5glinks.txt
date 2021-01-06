@@ -1,0 +1,12 @@
+http://git.opensource5g.org/openxg/ran/-/blob/develop/docker/Dockerfile.eNB.ubuntu18
+https://medium.com/@vkskans81/open-air-interface-oai-for-4g-5g-using-docker-platform-c1adb4e2cbb0
+https://github.com/ravens/docker-nextepc
+https://gitlab.eurecom.fr/oai/openairinterface5g/-/wikis/new-epc-docker
+https://gitlab.eurecom.fr/oai/openairinterface5g/-/wikis/HowToConnectCOTSUEwithOAIeNBNew
+https://gitlab.eurecom.fr/oai/openairinterface5g/-/wikis/AutoBuild
+
+https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/doc/BUILD.md
+https://gitlab.eurecom.fr/oai/openairinterface5g/-/wikis/OpenAirLTEEmulation
+https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/doc/L2NFAPI_S1.md
+https://github.com/ravens/docker-openairinterface-enb
+https://downloads.hindawi.com/journals/wcmc/2018/6263153.pdf
