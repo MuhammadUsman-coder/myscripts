@@ -10,3 +10,5 @@ https://gitlab.eurecom.fr/oai/openairinterface5g/-/wikis/OpenAirLTEEmulation
 https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/doc/L2NFAPI_S1.md
 https://github.com/ravens/docker-openairinterface-enb
 https://downloads.hindawi.com/journals/wcmc/2018/6263153.pdf
+
+https://hackmd.io/@ChiehChun/SkKj1oRoV/https%3A%2F%2Fhackmd.io%2F%40ChiehChun%2FryjEMYUyB
