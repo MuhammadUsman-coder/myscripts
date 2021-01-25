@@ -1,0 +1,13 @@
+Problem Statement:
+If problem Statement is not yet uploaded, wait till the date mentioned
+on VULMS or Announcements page, as it will be updated accordingly.
+
+What and How to Submit:
+- For this test phase, it shall be complete coding/application folder.
+If the application involves a datbase then put the database or a complete
+script of database, inside the application folder. After finalizing the folder
+compress it with Zip or Rar format and submit it on VULMS.
+
+- In case of two members in a project group only one member shall submit
+the file.
+
