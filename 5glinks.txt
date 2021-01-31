@@ -15,5 +15,5 @@ https://hackmd.io/@ChiehChun/SkKj1oRoV/https%3A%2F%2Fhackmd.io%2F%40ChiehChun%2F
 https://www.degruyter.com/view/journals/auto/67/7/article-p526.xml?language=de
 https://github.com/CarlosLopes97/NS3/tree/361fbeac7144056e431d5376234e822fc42efb20/Testes
 https://github.com/CarlosLopes97/Network-Simulator-3/tree/master/NS3/Testes
-https://github.com/ygalbel/ns3-lte-Acomp
-https://github.com/yanzbb/Semester_Project_ns3
+https://github.com/yanzbb/Semester_Project_ns3/blob/master/epc-rwp.cc
+https://github.com/APS992
