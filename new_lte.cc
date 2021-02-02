@@ -47,36 +47,12 @@ AnimationInterface * pAnim = 0;
 
 void modify ()
 {
-  std::ostringstream oss;
-  oss << "Update:" << Simulator::Now ().GetSeconds ();
-  pAnim->UpdateLinkDescription (0, 1, oss.str ());
-  pAnim->UpdateLinkDescription (0, 2, oss.str ());
-  pAnim->UpdateLinkDescription (0, 3, oss.str ());
-  pAnim->UpdateLinkDescription (0, 4, oss.str ());
-  pAnim->UpdateLinkDescription (0, 5, oss.str ());
-  pAnim->UpdateLinkDescription (0, 6, oss.str ());
-  pAnim->UpdateLinkDescription (1, 7, oss.str ());
-  pAnim->UpdateLinkDescription (1, 8, oss.str ());
-  pAnim->UpdateLinkDescription (1, 9, oss.str ());
-  pAnim->UpdateLinkDescription (1, 10, oss.str ());
-  pAnim->UpdateLinkDescription (1, 11, oss.str ());
-  
+
   // Every update change the node description for node 2
   std::ostringstream node0Oss;
   node0Oss << "-----Node:" << Simulator::Now ().GetSeconds ();
   pAnim->UpdateNodeDescription (2, node0Oss.str ());
 
-
-
-
-  // Every update change the color for node 4
- /* static uint32_t index = 1;
-  struct rgb color = colors[index];
-  for (uint32_t nodeId = 5; nodeId < 15; ++nodeId)
-    pAnim->UpdateNodeColor (nodeId, color.r, color.g, color.b);
-  color = colors[2];
-  for (uint32_t nodeId = 2; nodeId < 5; ++nodeId)
-    pAnim->UpdateNodeColor (nodeId, color.r, color.g, color.b);*/ 
 
 
   if (Simulator::Now ().GetSeconds () < 10) // This is important or the simulation
@@ -87,16 +63,6 @@ void modify ()
 
 int main (int argc, char *argv[])
 {
- Config::SetDefault ("ns3::LteSpectrumPhy::CtrlErrorModelEnabled", BooleanValue (true));
-  Config::SetDefault ("ns3::LteSpectrumPhy::DataErrorModelEnabled", BooleanValue (true));
-  Config::SetDefault ("ns3::LteHelper::UseIdealRrc", BooleanValue (true));
-  Config::SetDefault ("ns3::LteHelper::UsePdschForCqiGeneration", BooleanValue (true));
-
-  //Uplink Power Control
-  Config::SetDefault ("ns3::LteUePhy::EnableUplinkPowerControl", BooleanValue (true));
-  Config::SetDefault ("ns3::LteUePowerControl::ClosedLoop", BooleanValue (true));
-  Config::SetDefault ("ns3::LteUePowerControl::AccumulationEnabled", BooleanValue (false));
-
 
 Time::SetResolution (Time::NS);
 LogComponentEnable ("UdpEchoClientApplication", LOG_LEVEL_INFO);
@@ -124,9 +90,6 @@ cmd.Parse (argc, argv);
 
 //creation de l'objet lteHelper.
 Ptr<LteHelper> lteHelper = CreateObject<LteHelper> ();
-
-
-
 
 lteHelper->SetEnbDeviceAttribute ("DlEarfcn", UintegerValue (100));
 lteHelper->SetEnbDeviceAttribute ("UlEarfcn", UintegerValue (18100));
@@ -173,34 +136,7 @@ ueNodes.Create (numberOfNodesEU);
 
 //pour configurer la position et le mouvement des neouds
 
-double x_min = 0.0;
-double x_max = 10.0;
-double y_min = 0.0;
-double y_max = 20.0;
-double z_min = 0.0;
-double z_max = 10.0;
-Ptr<Building> b = CreateObject <Building> ();
-b->SetBoundaries (Box (x_min, x_max, y_min, y_max, z_min, z_max));
-b->SetBuildingType (Building::Residential);
-b->SetExtWallsType (Building::ConcreteWithWindows);
-b->SetNFloors (3);
-b->SetNRoomsX (3);
-b->SetNRoomsY (2);
 
-Ptr<GridBuildingAllocator> gridBuildingAllocator;
-gridBuildingAllocator = CreateObject<GridBuildingAllocator> ();
-gridBuildingAllocator->SetAttribute ("GridWidth", UintegerValue (3));
-gridBuildingAllocator->SetAttribute ("LengthX", DoubleValue (7));
-gridBuildingAllocator->SetAttribute ("LengthY", DoubleValue (13));
-gridBuildingAllocator->SetAttribute ("DeltaX", DoubleValue (3));
-gridBuildingAllocator->SetAttribute ("DeltaY", DoubleValue (3));
-gridBuildingAllocator->SetAttribute ("Height", DoubleValue (6));
-gridBuildingAllocator->SetBuildingAttribute ("NRoomsX", UintegerValue (2));
-gridBuildingAllocator->SetBuildingAttribute ("NRoomsY", UintegerValue (4));
-gridBuildingAllocator->SetBuildingAttribute ("NFloors", UintegerValue (2));
-gridBuildingAllocator->SetAttribute ("MinX", DoubleValue (0));
-gridBuildingAllocator->SetAttribute ("MinY", DoubleValue (0));
-gridBuildingAllocator->Create (6);
 
 MobilityHelper mobility;
 mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
@@ -334,11 +270,7 @@ uint16_t dlPort = 1234;
  // lteHelper->EnableTraces ();
 
 Simulator::Stop (Seconds (simTime));
-//lteHelper->SetFadingModel("ns3::TraceFadingLossModel");
 
-Config::SetDefault ("ns3::LteAmc::AmcModel", EnumValue (LteAmc::PiroEW2010));
-Config::SetDefault ("ns3::LteAmc::AmcModel", EnumValue (LteAmc::MiErrorModel));
-Config::SetDefault ("ns3::LteAmc::Ber", DoubleValue (0.00005));
 
 lteHelper->EnablePhyTraces ();
 lteHelper->EnableMacTraces ();
@@ -350,9 +282,6 @@ lteHelper->EnableRlcTraces ();
   pAnim->SetBackgroundImage ("/home/usman/ns-allinone-3.33/ns-3.33/scratch/Phone.png", -1, 1, 0.5, 0.5, 1);
 
   Simulator::Schedule (Seconds (simTime), modify);
-
-
-
 
 
 Simulator::Run ();
