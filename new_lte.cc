@@ -23,27 +23,7 @@
 #include <fstream>
 
 using namespace ns3;
-
-void
-PrintGnuplottableEnbListToFile (std::string filename)
-{
-  
-  for (NodeList::Iterator it = NodeList::Begin (); it != NodeList::End (); ++it)
-    {
-      Ptr<Node> node = *it;
-      int nDevs = node->GetNDevices ();
-      for (int j = 0; j < nDevs; j++)
-        {
-          Ptr<LteEnbNetDevice> enbdev = node->GetDevice (j)->GetObject <LteEnbNetDevice> ();
-         
-        }
-    }
-}
-
 AnimationInterface * pAnim = 0;
-
-
-
 
 void modify ()
 {
@@ -64,10 +44,6 @@ void modify ()
 int main (int argc, char *argv[])
 {
 
-Time::SetResolution (Time::NS);
-LogComponentEnable ("UdpEchoClientApplication", LOG_LEVEL_INFO);
-LogComponentEnable ("UdpEchoServerApplication", LOG_LEVEL_INFO);
-
 uint16_t numberOfNodesENB = 4;
 uint16_t numberOfNodesEU = 8;
 double simTime = 0.05;
@@ -86,7 +62,6 @@ cmd.Parse (argc, argv);
 ConfigStore inputConfig;
 inputConfig.ConfigureDefaults ();
 cmd.Parse (argc, argv);
-
 
 //creation de l'objet lteHelper.
 Ptr<LteHelper> lteHelper = CreateObject<LteHelper> ();
