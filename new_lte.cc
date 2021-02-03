@@ -231,8 +231,6 @@ Simulator::Stop (Seconds (simTime));
 // Create the animation object and configure for specified output
   pAnim = new AnimationInterface (animFile.c_str ());
 
-  pAnim->SetBackgroundImage ("/home/usman/ns-allinone-3.33/ns-3.33/scratch/Phone.png", -1, 1, 0.5, 0.5, 1);
-
 Simulator::Run ();
 
 Simulator::Destroy ();
