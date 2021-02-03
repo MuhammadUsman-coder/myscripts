@@ -31,24 +31,14 @@ int main (int argc, char *argv[])
 uint16_t numberOfNodesENB = 4;
 uint16_t numberOfNodesEU = 8;
 double simTime = 0.05;
-double distance = 250.0;
 double interPacketInterval = 150.0;
 
 std::string animFile = "usman.xml";
 
 
 CommandLine cmd;
-
-cmd.AddValue("numberOfNodes", "Number of eNodeBs + UE pairs", numberOfNodesENB);
-cmd.AddValue("simTime", "Total duration of the simulation [s])", simTime);
-cmd.AddValue("distance", "Distance between eNBs [m]", distance);
-cmd.AddValue("interPacketInterval", "Inter packet interval [ms])", interPacketInterval);
-cmd.AddValue ("animFile",  "File Name for Animation Output", animFile);
-
 cmd.Parse (argc, argv);
-
 ConfigStore inputConfig;
-
 inputConfig.ConfigureDefaults ();
 cmd.Parse (argc, argv);
 
@@ -66,6 +56,8 @@ Ptr<Node> pgw = epcHelper->GetPgwNode ();
 // creation  RemoteHost .
   NodeContainer remoteHostContainer;
   remoteHostContainer.Create (1);
+
+
   Ptr<Node> remoteHost = remoteHostContainer.Get (0);
   InternetStackHelper internet;
   internet.Install (remoteHostContainer);
@@ -75,7 +67,7 @@ Ptr<Node> pgw = epcHelper->GetPgwNode ();
 
   positionAlloc1->Add(Vector(500.0, -100.0, 20.0));
 
-  MobilityHelper mobility1;
+  Mobility mobility1;
   mobility1.SetPositionAllocator (positionAlloc1);
   mobility1.Install (remoteHostContainer);
 
@@ -83,9 +75,9 @@ Ptr<Node> pgw = epcHelper->GetPgwNode ();
 
   PointToPointHelper p2ph;
   p2ph.SetDeviceAttribute ("DataRate", DataRateValue (DataRate ("150Mb/s")));
-
-  p2ph.SetDeviceAttribute ("Mtu", UintegerValue (1500));
   p2ph.SetChannelAttribute ("Delay", TimeValue (Seconds (0.010)));
+
+
   NetDeviceContainer internetDevices = p2ph.Install (pgw, remoteHost);
 
   Ipv4AddressHelper ipv4h;
