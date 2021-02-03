@@ -57,7 +57,7 @@ Ptr<Node> pgw = epcHelper->GetPgwNode ();
   NodeContainer remoteHostContainer;
   remoteHostContainer.Create (1);
 
-
+  
   Ptr<Node> remoteHost = remoteHostContainer.Get (0);
   InternetStackHelper internet;
   internet.Install (remoteHostContainer);
@@ -67,7 +67,7 @@ Ptr<Node> pgw = epcHelper->GetPgwNode ();
 
   positionAlloc1->Add(Vector(500.0, -100.0, 20.0));
 
-  Mobility mobility1;
+  MobilityHelper mobility1;
   mobility1.SetPositionAllocator (positionAlloc1);
   mobility1.Install (remoteHostContainer);
 
@@ -75,9 +75,9 @@ Ptr<Node> pgw = epcHelper->GetPgwNode ();
 
   PointToPointHelper p2ph;
   p2ph.SetDeviceAttribute ("DataRate", DataRateValue (DataRate ("150Mb/s")));
+
+  p2ph.SetDeviceAttribute ("Mtu", UintegerValue (1500));
   p2ph.SetChannelAttribute ("Delay", TimeValue (Seconds (0.010)));
-
-
   NetDeviceContainer internetDevices = p2ph.Install (pgw, remoteHost);
 
   Ipv4AddressHelper ipv4h;
