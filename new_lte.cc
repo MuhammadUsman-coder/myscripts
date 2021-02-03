@@ -12,7 +12,6 @@
 #include "ns3/config-store.h"
 #include <ns3/buildings-module.h>
 #include "ns3/netanim-module.h"
-
 #include "ns3/flow-monitor-module.h"
 #include "ns3/log.h"
 #include <sys/timeb.h>
@@ -23,23 +22,8 @@
 #include <fstream>
 
 using namespace ns3;
+
 AnimationInterface * pAnim = 0;
-
-void modify ()
-{
-
-  // Every update change the node description for node 2
-  std::ostringstream node0Oss;
-  node0Oss << "-----Node:" << Simulator::Now ().GetSeconds ();
-  pAnim->UpdateNodeDescription (2, node0Oss.str ());
-
-
-
-  if (Simulator::Now ().GetSeconds () < 10) // This is important or the simulation
-    // will run endlessly
-    Simulator::Schedule (Seconds (0.05), modify);
-
-}
 
 int main (int argc, char *argv[])
 {
@@ -52,25 +36,29 @@ double interPacketInterval = 150.0;
 
 std::string animFile = "usman.xml";
 
+
 CommandLine cmd;
+
 cmd.AddValue("numberOfNodes", "Number of eNodeBs + UE pairs", numberOfNodesENB);
 cmd.AddValue("simTime", "Total duration of the simulation [s])", simTime);
 cmd.AddValue("distance", "Distance between eNBs [m]", distance);
 cmd.AddValue("interPacketInterval", "Inter packet interval [ms])", interPacketInterval);
 cmd.AddValue ("animFile",  "File Name for Animation Output", animFile);
+
 cmd.Parse (argc, argv);
+
 ConfigStore inputConfig;
+
 inputConfig.ConfigureDefaults ();
 cmd.Parse (argc, argv);
 
-//creation de l'objet lteHelper.
+
+//creation of the lteHelper object..
 Ptr<LteHelper> lteHelper = CreateObject<LteHelper> ();
 
-lteHelper->SetEnbDeviceAttribute ("DlEarfcn", UintegerValue (100));
-lteHelper->SetEnbDeviceAttribute ("UlEarfcn", UintegerValue (18100));
-
-//creation de l'objet epcHelper.
+//creation of the epc helper object.
 Ptr<PointToPointEpcHelper>  epcHelper = CreateObject<PointToPointEpcHelper> ();
+
 lteHelper->SetEpcHelper (epcHelper);
 
 Ptr<Node> pgw = epcHelper->GetPgwNode (); 
@@ -82,17 +70,24 @@ Ptr<Node> pgw = epcHelper->GetPgwNode ();
   InternetStackHelper internet;
   internet.Install (remoteHostContainer);
 
+// Template in c++ object creation
   Ptr<ListPositionAllocator> positionAlloc1 = CreateObject<ListPositionAllocator>();
+
   positionAlloc1->Add(Vector(500.0, -100.0, 20.0));
+
   MobilityHelper mobility1;
   mobility1.SetPositionAllocator (positionAlloc1);
   mobility1.Install (remoteHostContainer);
+
 // Create the Internet
+
   PointToPointHelper p2ph;
   p2ph.SetDeviceAttribute ("DataRate", DataRateValue (DataRate ("150Mb/s")));
+
   p2ph.SetDeviceAttribute ("Mtu", UintegerValue (1500));
   p2ph.SetChannelAttribute ("Delay", TimeValue (Seconds (0.010)));
   NetDeviceContainer internetDevices = p2ph.Install (pgw, remoteHost);
+
   Ipv4AddressHelper ipv4h;
   ipv4h.SetBase ("1.0.0.0", "255.0.0.0");
   Ipv4InterfaceContainer internetIpIfaces = ipv4h.Assign (internetDevices);
@@ -103,15 +98,14 @@ Ptr<Node> pgw = epcHelper->GetPgwNode ();
   Ipv4StaticRoutingHelper ipv4RoutingHelper;
   Ptr<Ipv4StaticRouting> remoteHostStaticRouting = ipv4RoutingHelper.GetStaticRouting (remoteHost->GetObject<Ipv4> ());
   remoteHostStaticRouting->AddNetworkRouteTo (Ipv4Address ("7.0.0.0"), Ipv4Mask ("255.0.0.0"), 1);
-//creation des noeuds pour eNB et UE
+
+//creation of nodes for eNB and UE
 NodeContainer enbNodes;
 enbNodes.Create (numberOfNodesENB);
 NodeContainer ueNodes;
 ueNodes.Create (numberOfNodesEU);
 
-//pour configurer la position et le mouvement des neouds
-
-
+//to configure the position and movement of the nodes
 
 MobilityHelper mobility;
 mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
@@ -143,19 +137,19 @@ mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
                            "Bounds", RectangleValue (Rectangle (-12000.0, 12000.0, -12000.0, 12000.0)));
 }
 mobility.Install (ueNodes);
-AsciiTraceHelper ascii;
-MobilityHelper::EnableAsciiAll (ascii.CreateFileStream ("mobility-trace-example.mob"));
 
-//pour installer le protocol lte pour enbNodes et ueNodes.
+//to install the lte protocol for enbNodes and ueNodes.
 NetDeviceContainer enbDevs;
 enbDevs = lteHelper->InstallEnbDevice (enbNodes);
 NetDeviceContainer ueDevs;
 ueDevs = lteHelper->InstallUeDevice (ueNodes);
-//BuildingsHelper::MakeMobilityModelConsistent ();
+
+
 // Install the IP stack on the UEs
   internet.Install (ueNodes);
   Ipv4InterfaceContainer ueIpIface;
   ueIpIface = epcHelper->AssignUeIpv4Address (NetDeviceContainer (ueDevs));
+
   // Assign IP address to UEs, and install applications
   for (uint32_t u = 0; u < ueNodes.GetN (); ++u)
     {
@@ -165,8 +159,8 @@ ueDevs = lteHelper->InstallUeDevice (ueNodes);
       ueStaticRouting->SetDefaultRoute (epcHelper->GetUeDefaultGatewayAddress (), 1);
     }
 
-//pour attacher ueDevs avec enbDevs
-//lteHelper->Attach (ueDevs, enbDevs.Get (0));
+
+//to attach ueDevs with enbDevs
 uint16_t j = 0;
 
 for (uint16_t i = 0; i < numberOfNodesEU; i++)
@@ -182,21 +176,10 @@ for (uint16_t i = 0; i < numberOfNodesEU; i++)
           lteHelper->Attach (ueDevs.Get(i), enbDevs.Get(j));
         }   
   }
-// Attach all UEs to the closest eNodeB
-//lteHelper->AttachToClosestEnb (ueDevs, enbDevs);
-// Add X2 inteface
-  //lteHelper->AddX2Interface (enbNodes);
-// X2-based Handover
- // lteHelper->HandoverRequest (Seconds (0.100), ueDevs.Get (0), enbDevs.Get (0), enbDevs.Get (1));
 
 
-//pour activer le support radio qui porte les données entre ueDevs et enbDevs
-Ptr<EpcTft> tft = Create<EpcTft> ();
-EpcTft::PacketFilter pf;
-pf.localPortStart = 1234;
-pf.localPortEnd = 1234;
-tft->Add (pf);
-lteHelper->ActivateDedicatedEpsBearer (ueDevs, EpsBearer (EpsBearer::NGBR_VIDEO_TCP_DEFAULT), tft);
+
+//to activate the radio medium which carries the data between ueDevs and enbDevs
 
 uint16_t dlPort = 1234;
   uint16_t ulPort = 2000;
@@ -242,22 +225,13 @@ uint16_t dlPort = 1234;
 // Install and start applications on UEs and remote host
   serverApps.Start (Seconds (0.01));
   clientApps.Start (Seconds (0.01));
- // lteHelper->EnableTraces ();
 
 Simulator::Stop (Seconds (simTime));
-
-
-lteHelper->EnablePhyTraces ();
-lteHelper->EnableMacTraces ();
-lteHelper->EnableRlcTraces ();
 
 // Create the animation object and configure for specified output
   pAnim = new AnimationInterface (animFile.c_str ());
 
   pAnim->SetBackgroundImage ("/home/usman/ns-allinone-3.33/ns-3.33/scratch/Phone.png", -1, 1, 0.5, 0.5, 1);
-
-  Simulator::Schedule (Seconds (simTime), modify);
-
 
 Simulator::Run ();
 
