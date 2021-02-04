@@ -9,17 +9,9 @@
 #include "ns3/lte-module.h"
 #include "ns3/applications-module.h"
 #include "ns3/point-to-point-helper.h"
-#include "ns3/config-store.h"
 #include <ns3/buildings-module.h>
 #include "ns3/netanim-module.h"
-#include "ns3/flow-monitor-module.h"
 #include "ns3/log.h"
-#include <sys/timeb.h>
-#include <ns3/internet-trace-helper.h>
-#include <ns3/spectrum-module.h>
-#include <ns3/log.h>
-#include <ns3/string.h>
-#include <fstream>
 
 using namespace ns3;
 
@@ -31,17 +23,11 @@ int main (int argc, char *argv[])
 uint16_t numberOfNodesENB = 4;
 uint16_t numberOfNodesEU = 8;
 double simTime = 0.05;
-double interPacketInterval = 150.0;
 
 std::string animFile = "usman.xml";
 
-
 CommandLine cmd;
 cmd.Parse (argc, argv);
-ConfigStore inputConfig;
-inputConfig.ConfigureDefaults ();
-cmd.Parse (argc, argv);
-
 
 //creation of the lteHelper object..
 Ptr<LteHelper> lteHelper = CreateObject<LteHelper> ();
@@ -57,7 +43,6 @@ Ptr<Node> pgw = epcHelper->GetPgwNode ();
   NodeContainer remoteHostContainer;
   remoteHostContainer.Create (1);
 
-  
   Ptr<Node> remoteHost = remoteHostContainer.Get (0);
   InternetStackHelper internet;
   internet.Install (remoteHostContainer);
@@ -76,7 +61,6 @@ Ptr<Node> pgw = epcHelper->GetPgwNode ();
   PointToPointHelper p2ph;
   p2ph.SetDeviceAttribute ("DataRate", DataRateValue (DataRate ("150Mb/s")));
 
-  p2ph.SetDeviceAttribute ("Mtu", UintegerValue (1500));
   p2ph.SetChannelAttribute ("Delay", TimeValue (Seconds (0.010)));
   NetDeviceContainer internetDevices = p2ph.Install (pgw, remoteHost);
 
@@ -98,7 +82,6 @@ NodeContainer ueNodes;
 ueNodes.Create (numberOfNodesEU);
 
 //to configure the position and movement of the nodes
-
 MobilityHelper mobility;
 mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
 mobility.SetPositionAllocator("ns3::GridPositionAllocator",
@@ -154,7 +137,6 @@ ueDevs = lteHelper->InstallUeDevice (ueNodes);
 
 //to attach ueDevs with enbDevs
 uint16_t j = 0;
-
 for (uint16_t i = 0; i < numberOfNodesEU; i++)
   {  
      if (j < numberOfNodesENB)
@@ -170,37 +152,30 @@ for (uint16_t i = 0; i < numberOfNodesEU; i++)
   }
 
 
-
 //to activate the radio medium which carries the data between ueDevs and enbDevs
-
 uint16_t dlPort = 1234;
   uint16_t ulPort = 2000;
   uint16_t otherPort = 3000;
   ApplicationContainer clientApps;
   ApplicationContainer serverApps;
+
   for (uint32_t u = 0; u < ueNodes.GetN (); ++u)
     {
       ++ulPort;
       ++otherPort;
+     
       PacketSinkHelper dlPacketSinkHelper ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), dlPort));
       PacketSinkHelper ulPacketSinkHelper ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), ulPort));
       PacketSinkHelper packetSinkHelper ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), otherPort));
+     
       serverApps.Add (dlPacketSinkHelper.Install (ueNodes.Get(u)));
       serverApps.Add (ulPacketSinkHelper.Install (remoteHost));
       serverApps.Add (packetSinkHelper.Install (ueNodes.Get(u)));
 
       UdpClientHelper dlClient (ueIpIface.GetAddress (u), dlPort);
-      dlClient.SetAttribute ("Interval", TimeValue (MilliSeconds(interPacketInterval)));
-      dlClient.SetAttribute ("MaxPackets", UintegerValue(1000000));
-
       UdpClientHelper ulClient (remoteHostAddr, ulPort);
-      ulClient.SetAttribute ("Interval", TimeValue (MilliSeconds(interPacketInterval)));
-      ulClient.SetAttribute ("MaxPackets", UintegerValue(1000000));
-
       UdpClientHelper client (ueIpIface.GetAddress (u), otherPort);
-      client.SetAttribute ("Interval", TimeValue (MilliSeconds(interPacketInterval)));
-      client.SetAttribute ("MaxPackets", UintegerValue(1000000));
-
+ 
       clientApps.Add (dlClient.Install (remoteHost));
       clientApps.Add (ulClient.Install (ueNodes.Get(u)));
       if (u+1 < ueNodes.GetN ())
@@ -213,7 +188,6 @@ uint16_t dlPort = 1234;
         }
     }
 
-
 // Install and start applications on UEs and remote host
   serverApps.Start (Seconds (0.01));
   clientApps.Start (Seconds (0.01));
@@ -224,11 +198,8 @@ Simulator::Stop (Seconds (simTime));
   pAnim = new AnimationInterface (animFile.c_str ());
 
 Simulator::Run ();
-
 Simulator::Destroy ();
 
 delete pAnim;
-
 return 0;
-
 }
