@@ -62,6 +62,7 @@ Ptr<Node> pgw = epcHelper->GetPgwNode ();
   p2ph.SetDeviceAttribute ("DataRate", DataRateValue (DataRate ("150Mb/s")));
 
   p2ph.SetChannelAttribute ("Delay", TimeValue (Seconds (0.010)));
+  p2ph.SetDeviceAttribute ("Mtu", UintegerValue (1500));
   NetDeviceContainer internetDevices = p2ph.Install (pgw, remoteHost);
 
   Ipv4AddressHelper ipv4h;
@@ -167,10 +168,6 @@ uint16_t dlPort = 1234;
       PacketSinkHelper dlPacketSinkHelper ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), dlPort));
       PacketSinkHelper ulPacketSinkHelper ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), ulPort));
       PacketSinkHelper packetSinkHelper ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), otherPort));
-     
-      serverApps.Add (dlPacketSinkHelper.Install (ueNodes.Get(u)));
-      serverApps.Add (ulPacketSinkHelper.Install (remoteHost));
-      serverApps.Add (packetSinkHelper.Install (ueNodes.Get(u)));
 
       UdpClientHelper dlClient (ueIpIface.GetAddress (u), dlPort);
       UdpClientHelper ulClient (remoteHostAddr, ulPort);
