@@ -12,27 +12,32 @@
 #include <ns3/buildings-module.h>
 #include "ns3/netanim-module.h"
 #include "ns3/log.h"
+#Declared Libraries 
 
 using namespace ns3;
 
+#Declaring pointer to store Animation interface object
 AnimationInterface * pAnim = 0;
 
+#Starting of main function
 int main (int argc, char *argv[])
 {
 
+#Assigning number of nodes to variables and simulation time  
 uint16_t numberOfNodesENB = 4;
 uint16_t numberOfNodesEU = 8;
 double simTime = 0.05;
 
+#Assigning name of xml file for Netanim in variable
 std::string animFile = "usman.xml";
 
 CommandLine cmd;
 cmd.Parse (argc, argv);
 
-//creation of the lteHelper object..
+//creation of the lteHelper object which is a software library that allows the simulation of LTE networks, optionally including the EPC
 Ptr<LteHelper> lteHelper = CreateObject<LteHelper> ();
 
-//creation of the epc helper object.
+//creation of the epc helper object ,Set the EpcHelper to be used to setup the EPC network in conjunction with the setup of the LTE radio access network
 Ptr<PointToPointEpcHelper>  epcHelper = CreateObject<PointToPointEpcHelper> ();
 
 lteHelper->SetEpcHelper (epcHelper);
@@ -192,11 +197,14 @@ uint16_t dlPort = 1234;
 Simulator::Stop (Seconds (simTime));
 
 // Create the animation object and configure for specified output
-  pAnim = new AnimationInterface (animFile.c_str ());
+  
+pAnim  = new AnimationInterface (animFile.c_str ());
 
+#Running and destroying simulation 
 Simulator::Run ();
 Simulator::Destroy ();
 
+#Deleting Pointer for anim interface object  
 delete pAnim;
 return 0;
 }
