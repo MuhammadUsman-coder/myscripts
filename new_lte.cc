@@ -12,23 +12,24 @@
 #include <ns3/buildings-module.h>
 #include "ns3/netanim-module.h"
 #include "ns3/log.h"
-#Declared Libraries 
+
+//Declared Libraries 
 
 using namespace ns3;
 
-#Declaring pointer to store Animation interface object
+//Declaring pointer to store Animation interface object
 AnimationInterface * pAnim = 0;
 
-#Starting of main function
+//Starting of main function
 int main (int argc, char *argv[])
 {
 
-#Assigning number of nodes to variables and simulation time  
+//Assigning number of nodes to variables and simulation time  
 uint16_t numberOfNodesENB = 4;
 uint16_t numberOfNodesEU = 8;
 double simTime = 0.05;
 
-#Assigning name of xml file for Netanim in variable
+//Assigning name of xml file for Netanim in variable
 std::string animFile = "usman.xml";
 
 CommandLine cmd;
@@ -200,11 +201,11 @@ Simulator::Stop (Seconds (simTime));
   
 pAnim  = new AnimationInterface (animFile.c_str ());
 
-#Running and destroying simulation 
+//Running and destroying simulation 
 Simulator::Run ();
 Simulator::Destroy ();
 
-#Deleting Pointer for anim interface object  
+//Deleting Pointer for anim interface object  
 delete pAnim;
 return 0;
 }
